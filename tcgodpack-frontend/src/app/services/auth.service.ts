@@ -9,10 +9,10 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = 'http://localhost:3000';
 
-  login(credentials: { username: string; password: string }): Observable<{ token: string }> {
+  login(credentials: { email: string; password: string }): Observable<{ token: string }> {
     return this.http.post<{ token: string }>(`${this.baseUrl}/auth/login`, credentials).pipe(
       tap(() => {
-        localStorage.setItem('currentUser', credentials.username);
+        localStorage.setItem('currentUser', credentials.email);
       })
     );
   }
@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   signUp(profile: {
-    username: string;
+    email: string;
     password: string;
     name: string;
     role: string;

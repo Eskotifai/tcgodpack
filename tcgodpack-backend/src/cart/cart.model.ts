@@ -7,7 +7,7 @@ export class CartProduct {
 
 export class Cart {
   constructor(
-    public username: string,
+    public email: string,
     public products: CartProduct[] = [],
   ) {}
 }

@@ -13,9 +13,9 @@ export class ProfileController {
 
   @Get()
   async obtenerPorUsuario(
-    @Query('username') username: string,
+    @Query('email') email: string,
   ): Promise<Profile> {
-    const usuario = await this.profileService.obtenerPorUsuario(username);
+    const usuario = await this.profileService.obtenerPorCorreo(email);
     if (!usuario) {
       throw new NotFoundException('Usuario no encontrado');
     }

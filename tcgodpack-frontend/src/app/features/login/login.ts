@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
-  credentials = { username: '', password: '' };
+  credentials = { email: '', password: '' };
   errorMessage: string = '';
 
   constructor(
@@ -29,7 +29,7 @@ export class LoginComponent {
         this.router.navigate(['/catalog']);
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Usuario o contraseña incorrectos';
+        this.errorMessage = err.error?.message || 'Correo o contraseña incorrectos';
       }
     });
   }

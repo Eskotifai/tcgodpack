@@ -1,49 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs/promises';
-import * as path from 'path';
 import { Product } from './product.model';
+import { JsonHandlerService } from '../shared/json-handler/json-handler.service';
 
 @Injectable()
 export class ProductsService {
-  private readonly dataDir = path.join(process.cwd(), 'data');
-  private readonly filePath = path.join(this.dataDir, 'product.json');
-  private writeQueue: Promise<void> = Promise.resolve();
-
-  private async obtenerTodos(): Promise<Product[]> {
-    try {
-      const data = await fs.readFile(this.filePath, 'utf-8');
-      return JSON.parse(data) as Product[];
-    } catch {
-      return [];
-    }
-  }
-
-  private async doAtomicWrite(products: Product[]): Promise<void> {
-    await fs.mkdir(this.dataDir, { recursive: true });
-    const tmp = this.filePath + '.tmp';
-    await fs.writeFile(tmp, JSON.stringify(products, null, 2), 'utf-8');
-    await fs.rename(tmp, this.filePath);
-  }
-
-  private enqueueWrite(products: Product[]): Promise<void> {
-    this.writeQueue = this.writeQueue.then(
-      () => this.doAtomicWrite(products),
-      () => this.doAtomicWrite(products),
-    );
-    return this.writeQueue;
-  }
+  // 1. Usamos Inyección de Dependencias a través del constructor
+  constructor(private readonly jsonHandler: JsonHandlerService) {}
 
   async obtenerTodosProductos(): Promise<Product[]> {
-    return this.obtenerTodos();
+    // 2. Le pedimos los datos al manejador usando el nombre correcto: 'products'
+    return this.jsonHandler.readData<Product>('product');
   }
 
   async obtenerPorNumero(number: number): Promise<Product | undefined> {
-    const productos = await this.obtenerTodos();
+    // 3. Reutilizamos obtenerTodosProductos() en lugar del antiguo obtenerTodos()
+    const productos = await this.obtenerTodosProductos();
     return productos.find((producto) => producto.number === number);
   }
 
   async buscarPorNombre(name: string): Promise<Product[]> {
-    const productos = await this.obtenerTodos();
+    const productos = await this.obtenerTodosProductos();
     return productos.filter((producto) =>
       producto.name.toLowerCase().includes(name.toLowerCase()),
     );
@@ -65,7 +41,7 @@ export class ProductsService {
       throw new Error('available must be a non-negative number');
     if (!imageUrl) throw new Error('imageUrl is required');
 
-    const productos = await this.obtenerTodos();
+    const productos = await this.obtenerTodosProductos();
     if (productos.some((item) => item.number === number)) {
       throw new Error('A product with that number already exists');
     }
@@ -79,7 +55,10 @@ export class ProductsService {
     );
 
     productos.push(nuevoProducto);
-    await this.enqueueWrite(productos);
+    
+    // 4. Escribimos los datos usando nuestra herramienta centralizada y el nombre plural
+    await this.jsonHandler.writeData('product', productos);
+    
     return nuevoProducto;
   }
 }

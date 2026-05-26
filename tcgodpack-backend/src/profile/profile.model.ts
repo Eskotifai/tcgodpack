@@ -5,7 +5,8 @@ export enum UserRole {
 
 export class Profile {
   constructor(
-    public username: string,
+    // public username: string,
+    public email: string,
     public password: string,
     public name: string,
     public role: UserRole,

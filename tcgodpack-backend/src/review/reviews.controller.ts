@@ -9,13 +9,13 @@ export class ReviewsController {
   @Get()
   async obtenerResenas(
     @Query('productName') productName?: string,
-    @Query('username') username?: string,
+    @Query('email') email?: string,
   ): Promise<Review[]> {
     if (productName) {
       return this.reviewsService.obtenerPorProducto(productName);
     }
-    if (username) {
-      return this.reviewsService.obtenerPorUsuario(username);
+    if (email) {
+      return this.reviewsService.obtenerPorEmail(email);
     }
     return this.reviewsService.obtenerTodasReviews();
   }
