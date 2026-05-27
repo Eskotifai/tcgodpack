@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { Profile, UserRole } from './profile.model';
 
 @Injectable()
-export class ProfileService {
+export class ProfileService implements OnModuleInit {
   private readonly dataDir = path.join(process.cwd(), 'data');
   private readonly filePath = path.join(this.dataDir, 'profile.json');
   private writeQueue: Promise<void> = Promise.resolve();
 
+  async onModuleInit() {
+    await this.inicializarAdminUnico();
+  }
   private async obtenerTodos(): Promise<Profile[]> {
     try {
       const data = await fs.readFile(this.filePath, 'utf-8');
@@ -31,6 +34,25 @@ export class ProfileService {
       () => this.doAtomicWrite(usuarios),
     );
     return this.writeQueue;
+  }
+
+  // Crea el administrador si no existe ningún admin en la lista
+  private async inicializarAdminUnico(): Promise<void> {
+    const usuarios = await this.obtenerTodos();
+    const existeAdmin = usuarios.some((u) => u.role === UserRole.ADMIN);
+
+    if (!existeAdmin) {
+      console.log('⚙️ Inicializando el administrador único de tcgodpack...');
+      const adminMaestro = new Profile(
+        'admin@tcgodpack.com',
+        '1234', // Puedes cambiar esta contraseña por la que quieras
+        'TCG God Pack Admin',
+        UserRole.ADMIN,
+        [],
+      );
+      usuarios.push(adminMaestro);
+      await this.enqueueWrite(usuarios);
+    }
   }
 
   async obtenerTodosUsuarios(): Promise<Profile[]> {

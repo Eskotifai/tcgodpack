@@ -20,4 +20,9 @@ export class ProductService {
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}/products`);
   }
+
+  // 🛠️ AGREGA ESTE MÉTODO COMPLETAMENTE TIPADO (Soluciona el error TS2339)
+  createProduct(product: Product): Observable<Product> {
+    return this.http.post<Product>(`${this.baseUrl}/products`, product);
+  }
 }

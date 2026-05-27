@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
@@ -9,10 +9,12 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = 'http://localhost:3000';
 
-  login(credentials: { username: string; password: string }): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.baseUrl}/auth/login`, credentials).pipe(
-      tap(() => {
+  login(credentials: { username: string; password: string }): Observable<{ token: string; role: string }> {
+    return this.http.post<{ token: string; role: string }>(`${this.baseUrl}/auth/login`, credentials).pipe(
+      tap((response) => {
         localStorage.setItem('currentUser', credentials.username);
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('role', response.role);
       })
     );
   }
@@ -21,9 +23,14 @@ export class AuthService {
     return localStorage.getItem('currentUser');
   }
 
+  getUserRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('role');
   }
 
   signUp(profile: {

@@ -1,0 +1,162 @@
+/* Reutilizamos los cimientos de tu diseño */
+.store-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  background-color: #0b132b;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.store-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.topbar-btn {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.topbar-btn:hover {
+  background-color: #ffffff;
+  color: #0b132b;
+}
+
+.catalog-container {
+  max-width: 600px; /* Reducido para que el formulario no flote estirado en pantallas anchas */
+  margin: 2rem auto;
+  padding: 2.5rem 2rem;
+  background-color: #ffffff;
+  border: 1px solid #d8e2ef;
+  border-radius: 0px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.catalog-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.catalog-header h2 {
+  color: #0b132b;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.welcome-text {
+  color: #4a5568;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* --- Estilos del Formulario de Administración --- */
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group label {
+  color: #0b132b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #0b132b;
+}
+
+/* Botón de envío que emula tus componentes */
+.submit-btn {
+  background-color: #0b132b;
+  color: #ffffff;
+  border: 1px solid #0b132b;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background-color 0.2s, opacity 0.2s;
+  margin-top: 1rem;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #1c2541;
+  border-color: #1c2541;
+}
+
+.submit-btn:disabled {
+  background-color: #cbd5e1;
+  border-color: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+/* Alertas */
+.alert {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}

@@ -1,0 +1,52 @@
+<nav class="store-topbar">
+  <span class="store-name">tcgodpack — Panel de Control</span>
+  <div class="topbar-actions">
+    <button class="topbar-btn" routerLink="/catalog">👁️ Ver Catálogo</button>
+  </div>
+</nav>
+
+<div class="catalog-container">
+  <div class="catalog-header">
+    <h2>Registrar Nueva Carta</h2>
+    <p class="welcome-text">Ingresa los detalles para expandir el inventario de manera atómica.</p>
+  </div>
+
+  <form (ngSubmit)="guardarCarta()" #cardForm="ngForm" class="admin-form">
+    <div class="form-group">
+      <label for="name">Nombre de la Carta / Expansión</label>
+      <input type="text" id="name" name="name" [(ngModel)]="carta.name" required placeholder="Ej: LUGIA FETCH - NEO GENESIS">
+    </div>
+
+    <div class="form-group">
+      <label for="number">Número de Colección Único (ID)</label>
+      <input type="number" id="number" name="number" [(ngModel)]="carta.number" min="1" required placeholder="Ej: 7">
+    </div>
+
+    <div class="form-group-row">
+      <div class="form-group">
+        <label for="price">Precio de Mercado ($)</label>
+        <input type="number" id="price" name="price" [(ngModel)]="carta.price" min="0" required placeholder="Ej: 280.00">
+      </div>
+
+      <div class="form-group">
+        <label for="available">Unidades en Stock</label>
+        <input type="number" id="available" name="available" [(ngModel)]="carta.available" min="0" required placeholder="Ej: 3">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="imageUrl">URL de la Imagen Oficial</label>
+      <input type="url" id="imageUrl" name="imageUrl" [(ngModel)]="carta.imageUrl" required placeholder="https://images.pokemontcg.io/swsh12pt5/gg44_hires.png">
+    </div>
+
+    <button type="submit" class="submit-btn" [disabled]="!cardForm.valid">Guardar en Inventario</button>
+  </form>
+
+  @if (successAlert) {
+    <div class="alert success">{{ successAlert }}</div>
+  }
+  
+  @if (errorAlert) {
+    <div class="alert error">{{ errorAlert }}</div>
+  }
+</div>
