@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { Cart, CartProduct } from './cart.model';
 import { CartService } from './cart.service';
+import { Product } from '../product/product.model';
 
 @Controller('cart') // http://localhost:3000/cart
 export class CartController {
@@ -13,11 +14,11 @@ export class CartController {
     @Body()
     body: {
       email: string;
-      productName: string;
+      product: Product;
       quantity: number;
     },
   ): Promise<Cart> {
-    const itemProducto = new CartProduct(body.productName, body.quantity);
+    const itemProducto = new CartProduct(body.product, body.quantity);
     return await this.cartService.agregarProducto(body.email, itemProducto);
   }
 

@@ -1,5 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 
 interface Product {
@@ -13,7 +15,7 @@ interface Product {
 @Component({
   selector: 'app-catalog-list-page',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './catalog-list-page.html',
   styleUrl: './catalog-list-page.css',
 })
@@ -23,7 +25,8 @@ export class CatalogListPage implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -37,5 +40,13 @@ export class CatalogListPage implements OnInit {
         console.error('Error al cargar productos:', err);
       }
     });
+  }
+
+  trackByNumber(index: number, item: Product) {
+    return item.number;
+  }
+
+  openCart(): void {
+    this.router.navigate(['/cart']);
   }
 }

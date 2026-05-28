@@ -1,1 +1,82 @@
-<p>cart-view-page works!</p>
+<div class="cart-page">
+	<app-navbar></app-navbar>
+	<div class="cart-hero">
+		<div>
+			<h2>Resumen de compra</h2>
+			<p class="subtitle" *ngIf="cart as c">Usuario: <strong>{{ c.email }}</strong></p>
+		</div>
+	</div>
+
+	<p *ngIf="loading" class="status-message">Cargando carrito...</p>
+	<p *ngIf="error" class="status-message error">{{ error }}</p>
+
+	<div class="cart-inner">
+		<main class="cart-main">
+			<div *ngIf="!loading && cart as c">
+				<div *ngIf="(c.products?.length ?? 0) === 0" class="empty-state">
+					<p>El carrito está vacío.</p>
+				</div>
+
+				<div *ngIf="(c.products?.length ?? 0) > 0" class="cart-list">
+					<article class="cart-item" *ngFor="let item of (c.products ?? []); trackBy: trackByProductNumber">
+						<div class="item-image-wrap">
+							<img class="item-image" [src]="item.product.imageUrl" [alt]="item.product.name" />
+							<div class="item-quantity-badge">x{{ item.quantity }}</div>
+						</div>
+
+						<div class="item-content">
+							<div class="item-top-row">
+								<div>
+									<h3>{{ item.product.name }}</h3>
+									<p class="quantity-label">Cantidad en el carrito: <strong>{{ item.quantity }}</strong></p>
+								</div>
+								<div class="item-subtotal">
+									<span>Subtotal</span>
+									<strong>${{ (item.product.price * item.quantity) | number:'1.2-2' }}</strong>
+								</div>
+							</div>
+
+							<div class="item-meta">
+								<div>
+									<span class="meta-label">Precio unitario</span>
+									<p>${{ item.product.price | number:'1.2-2' }}</p>
+								</div>
+								<div>
+									<span class="meta-label">Cantidad</span>
+									<p>{{ item.quantity }}</p>
+								</div>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+		</main>
+
+		<aside class="cart-sidebar" *ngIf="!loading">
+			<div class="sidebar-card">
+				<h4>Resumen de pago</h4>
+				<div class="line">
+					<span>Subtotal</span>
+					<span>${{ subtotal | number:'1.2-2' }}</span>
+				</div>
+				<div class="line">
+					<span>IVA ({{ (taxRate * 100) | number:'1.0-0' }}%)</span>
+					<span>${{ iva | number:'1.2-2' }}</span>
+				</div>
+				<div class="line">
+					<span>Envío</span>
+					<span>${{ shippingCost | number:'1.2-2' }}</span>
+				</div>
+
+				<div class="divider"></div>
+
+				<div class="total-row">
+					<span>Total</span>
+					<strong>${{ grandTotal | number:'1.2-2' }}</strong>
+				</div>
+
+				<button class="checkout-btn">Proceder al pago</button>
+			</div>
+		</aside>
+	</div>
+</div>

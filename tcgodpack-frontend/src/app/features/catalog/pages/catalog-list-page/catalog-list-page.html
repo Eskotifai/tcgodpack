@@ -1,7 +1,7 @@
 <nav class="store-topbar">
   <span class="store-name">tcgodpack</span>
   <div class="topbar-actions">
-    <button class="topbar-btn">🛒 Carrito</button>
+    <button class="topbar-btn" (click)="openCart()">🛒 Carrito</button>
     <button class="topbar-btn">👤 Perfil</button>
   </div>
 </nav>
@@ -9,25 +9,18 @@
 <div class="catalog-container">
   <div class="catalog-header">
     <h2>Productos disponibles</h2>
-    @if (currentUser()) {
-      <p class="welcome-text">Usuario: <strong>{{ currentUser() }}</strong></p>
-    }
+    <p class="welcome-text" *ngIf="currentUser()">Usuario: <strong>{{ currentUser() }}</strong></p>
   </div>
+  <p class="empty-message" *ngIf="products().length === 0">No hay productos disponibles.</p>
 
-  @if (products().length === 0) {
-    <p class="empty-message">No hay productos disponibles.</p>
-  } @else {
-    <div class="product-grid">
-      @for (product of products(); track product.number) {
-        <div class="product-card">
-          <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
-          <div class="product-info">
-            <h3 class="product-name">{{ product.name }}</h3>
-            <p class="product-price">${{ product.price }}</p>
-            <p class="product-available">Disponibles: {{ product.available }}</p>
-          </div>
-        </div>
-      }
+  <div class="product-grid" *ngIf="products().length > 0">
+    <div class="product-card" *ngFor="let product of products(); trackBy: trackByNumber">
+      <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
+      <div class="product-info">
+        <h3 class="product-name">{{ product.name }}</h3>
+        <p class="product-price">${{ product.price }}</p>
+        <p class="product-available">Disponibles: {{ product.available }}</p>
+      </div>
     </div>
-  }
+  </div>
 </div>

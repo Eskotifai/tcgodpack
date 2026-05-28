@@ -1,0 +1,67 @@
+:root{
+  --nav-bg: linear-gradient(90deg,#0b1220,#0f1724);
+  --nav-foreground: #ffffff;
+  --nav-accent: #7c3aed;
+}
+
+/* Use the same topbar styles as the catalog for consistent look */
+.store-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  background-color: #0b132b;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.store-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.topbar-btn {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.topbar-btn:hover {
+  background-color: #ffffff;
+  color: #0b132b;
+}
+
+@media(max-width:720px){
+  .topbar-actions{display:none}
+}
+
+/* Light variant: when the navbar is placed on white backgrounds */
+.store-topbar.light{
+  background-color: #ffffff;
+  color: #0b132b;
+}
+.store-topbar.light .topbar-btn{
+  color:#0b132b;
+  border-color:#0b132b;
+}
+.store-topbar.light .topbar-btn:hover{
+  background-color:#0b132b;
+  color:#ffffff;
+}

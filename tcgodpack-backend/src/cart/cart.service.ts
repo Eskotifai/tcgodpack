@@ -103,22 +103,57 @@ export class CartService {
     const carritos = await this.obtenerTodos();
     const carritoUsuario = carritos.find((c) => c.email === email);
 
-    return carritoUsuario || { email: email, products: [] };
+    if (carritoUsuario) {
+      carritoUsuario.products = Array.isArray(carritoUsuario.products)
+        ? carritoUsuario.products
+        : [];
+      return carritoUsuario;
+    }
+
+    const carritoVacio: Cart = { email, products: [] };
+    carritos.push(carritoVacio);
+
+    try {
+      await this.jsonHandler.writeData('cart', carritos);
+    } catch {
+      // Si no puede persistir, igual devolvemos el carrito vacío en memoria.
+    }
+
+    return carritoVacio;
   }
 
   async agregarProducto(
     email: string,
     nuevoProducto: CartProduct,
   ): Promise<Cart> {
-    const productName = String(nuevoProducto.productName ?? '').trim();
+    const product = nuevoProducto.product;
     const quantity = Number(nuevoProducto.quantity);
     
-    if (!productName) throw new BadRequestException('productName is required');
+    if (!product || !String(product.name ?? '').trim()) {
+      throw new BadRequestException('product is required');
+    }
+    if (!Number.isFinite(Number(product.number)) || Number(product.number) <= 0) {
+      throw new BadRequestException('product.number is required');
+    }
+    if (!String(product.imageUrl ?? '').trim()) {
+      throw new BadRequestException('product.imageUrl is required');
+    }
+    if (!Number.isFinite(Number(product.price)) || Number(product.price) < 0) {
+      throw new BadRequestException('product.price must be a non-negative number');
+    }
     if (!Number.isFinite(quantity) || quantity <= 0)
       throw new BadRequestException('quantity must be a positive number');
 
-    nuevoProducto.productName = productName;
     nuevoProducto.quantity = Math.floor(quantity);
+    const normalizedProduct = {
+      ...product,
+      number: Math.floor(Number(product.number)),
+      price: Number(product.price),
+      available: Math.floor(Number(product.available ?? 0)),
+      name: String(product.name).trim(),
+      imageUrl: String(product.imageUrl).trim(),
+    };
+    nuevoProducto.product = normalizedProduct;
 
     const carritos = await this.obtenerTodos();
     let carritoUsuario = carritos.find((c) => c.email === email);
@@ -129,7 +164,7 @@ export class CartService {
     }
 
     const productoExistente = carritoUsuario.products.find(
-      (p) => String(p.productName).trim().toLowerCase() === productName.toLowerCase(),
+      (p) => p.product.number === normalizedProduct.number,
     );
 
     if (productoExistente) {
