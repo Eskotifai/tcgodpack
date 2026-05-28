@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // 🌟 CRUCIAL: Debe estar importado aquí
+import { Router, RouterLink } from '@angular/router'; // 🌟 CRUCIAL: Ambos imports para la navegación
 import { AuthService } from '../../services/auth.service';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink], // 🌟 Se inyectan en la plantilla standalone
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
+  // Manejo exclusivo por email descartando el username por completo
   credentials = { email: '', password: '' };
   errorMessage: string = '';
 
@@ -25,11 +26,19 @@ export class LoginComponent {
 
     this.authService.login(this.credentials).subscribe({
       next: (response) => {
+        // Almacenamos el token devuelto
         localStorage.setItem('token', response.token);
-        this.router.navigate(['/catalog']);
+        
+        // Redirección inteligente basada en el rol de la base de datos
+        if (response.role === 'admin') {
+          this.router.navigate(['/admin-dashboard']);
+        } else {
+          this.router.navigate(['/catalog']);
+        }
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Correo o contraseña incorrectos';
+        // Captura el mensaje exacto enviado desde el backend de NestJS
+        this.errorMessage = err.error?.message || 'Usuario o contraseña incorrectos';
       }
     });
   }
