@@ -30,6 +30,7 @@ export class AuthService {
     email: string;
     password: string;
     name: string;
+    lastName: string;
     role: string;
   }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/profile/register`, profile);

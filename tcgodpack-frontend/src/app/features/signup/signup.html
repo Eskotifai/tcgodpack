@@ -5,8 +5,13 @@
 
     <form [formGroup]="signupForm" (ngSubmit)="alRegistrar()">
       <div class="form-group">
-        <label for="name">Nombre Completo:</label>
+        <label for="name">Nombre:</label>
         <input type="text" id="name" formControlName="name" required placeholder="Tu nombre">
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Apellido:</label>
+        <input type="text" id="lastName" formControlName="lastName" required placeholder="Tu apellido">
       </div>
 
       <div class="form-group">

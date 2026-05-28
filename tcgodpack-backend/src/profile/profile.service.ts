@@ -96,14 +96,14 @@ export class ProfileService {
     const email = String(profileData.email ?? '').trim().toLowerCase();
     const password = String(profileData.password ?? '').trim(); 
     const name = String(profileData.name ?? '').trim();
-    // const apellido = String(profileData.apellido ?? '').trim();
+    const lastName = String(profileData.lastName ?? '').trim();
     const role = profileData.role ?? UserRole.CUSTOMER;
     const purchasedProducts = profileData.purchasedProducts ?? [];
 
     if (!email) throw new ConflictException('El correo es requerido');
     if (!password) throw new ConflictException('La contraseña es requerida');
     if (!name) throw new ConflictException('El nombre es requerido');
-    // if (!apellido) throw new ConflictException('El apellido es requerido');
+    if (!lastName) throw new ConflictException('El apellido es requerido');
     if (!Object.values(UserRole).includes(role))
       throw new Error('El rol debe ser admin o customer');
 
@@ -114,9 +114,10 @@ export class ProfileService {
 
     // Creamos el perfil con la contraseña en texto plano según los requerimientos
     const nuevoUsuario = new Profile(
-      email,password, 
+      email,
+      password, 
       name,
-      // apellido,
+      lastName,
       role,
       purchasedProducts,
     );
