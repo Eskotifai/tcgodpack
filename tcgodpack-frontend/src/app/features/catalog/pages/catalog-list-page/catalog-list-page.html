@@ -11,16 +11,28 @@
     <h2>Productos disponibles</h2>
     <p class="welcome-text" *ngIf="currentUser()">Usuario: <strong>{{ currentUser() }}</strong></p>
   </div>
+
+  <div
+    *ngIf="feedbackMessage()"
+    class="catalog-feedback"
+    [class.is-visible]="feedbackVisible()"
+    [class.is-success]="feedbackType() === 'success'"
+    [class.is-error]="feedbackType() === 'error'"
+    role="status"
+    aria-live="polite"
+  >
+    {{ feedbackMessage() }}
+  </div>
+
   <p class="empty-message" *ngIf="products().length === 0">No hay productos disponibles.</p>
 
   <div class="product-grid" *ngIf="products().length > 0">
-    <div class="product-card" *ngFor="let product of products(); trackBy: trackByNumber">
-      <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
-      <div class="product-info">
-        <h3 class="product-name">{{ product.name }}</h3>
-        <p class="product-price">${{ product.price }}</p>
-        <p class="product-available">Disponibles: {{ product.available }}</p>
-      </div>
-    </div>
+    <app-product-card
+      *ngFor="let product of products(); trackBy: trackByNumber"
+      [product]="product"
+      [currentUser]="currentUser()"
+      [cartRemainingUnits]="cartRemainingUnits()"
+      (addToCartFeedback)="handleProductFeedback($event.message, $event.type)"
+    ></app-product-card>
   </div>
 </div>

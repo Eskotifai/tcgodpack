@@ -90,9 +90,12 @@
 import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { Cart, CartProduct } from './cart.model';
 import { JsonHandlerService } from '../shared/json-handler/json-handler.service';
+import { Product } from '../product/product.model';
 
 @Injectable()
 export class CartService {
+  private static readonly maxUnitsInCart = 10;
+
   constructor(private readonly jsonHandler: JsonHandlerService) {}
 
   private async obtenerTodos(): Promise<Cart[]> {
@@ -122,6 +125,28 @@ export class CartService {
     return carritoVacio;
   }
 
+  private getTotalUnits(cart: Cart): number {
+    return (cart.products ?? []).reduce((sum, item) => {
+      const quantity = Math.floor(Number(item.quantity ?? 0));
+      return sum + Math.max(0, quantity);
+    }, 0);
+  }
+
+  private getInsufficientStockProducts(cart: Cart, products: Product[]): string[] {
+    const productCatalog = new Map<number, Product>(
+      products.map((product) => [product.number, product]),
+    );
+
+    return (cart.products ?? [])
+      .filter((item) => {
+        const catalogProduct = productCatalog.get(item.product.number);
+        const requestedQuantity = Math.max(0, Math.floor(Number(item.quantity ?? 0)));
+
+        return !catalogProduct || Math.floor(Number(catalogProduct.available ?? 0)) < requestedQuantity;
+      })
+      .map((item) => item.product.name);
+  }
+
   async agregarProducto(
     email: string,
     nuevoProducto: CartProduct,
@@ -144,7 +169,7 @@ export class CartService {
     if (!Number.isFinite(quantity) || quantity <= 0)
       throw new BadRequestException('quantity must be a positive number');
 
-    nuevoProducto.quantity = Math.floor(quantity);
+    const requestedQuantity = Math.floor(quantity);
     const normalizedProduct = {
       ...product,
       number: Math.floor(Number(product.number)),
@@ -163,20 +188,76 @@ export class CartService {
       carritos.push(carritoUsuario);
     }
 
+    const currentTotalUnits = this.getTotalUnits(carritoUsuario);
+    const remainingUnits = CartService.maxUnitsInCart - currentTotalUnits;
+
+    if (remainingUnits <= 0) {
+      throw new BadRequestException('la cantidad de unidades seleccionadas supera el espacio actual del carrito');
+    }
+
+    if (requestedQuantity > remainingUnits) {
+      throw new BadRequestException('la cantidad de unidades seleccionadas supera el espacio actual del carrito');
+    }
+
     const productoExistente = carritoUsuario.products.find(
       (p) => p.product.number === normalizedProduct.number,
     );
 
     if (productoExistente) {
-      productoExistente.quantity += nuevoProducto.quantity;
+      productoExistente.quantity = Math.max(0, Math.floor(productoExistente.quantity ?? 0)) + requestedQuantity;
     } else {
-      carritoUsuario.products.push(nuevoProducto);
+      carritoUsuario.products.push({
+        product: normalizedProduct,
+        quantity: requestedQuantity,
+      });
     }
 
     try {
       await this.jsonHandler.writeData('cart', carritos);
     } catch (err) {
       throw new InternalServerErrorException('Error al guardar el carrito');
+    }
+
+    return carritoUsuario;
+  }
+
+  async procesarCompra(email: string): Promise<Cart> {
+    const carritos = await this.obtenerTodos();
+    const carritoUsuario = carritos.find((c) => c.email === email);
+
+    if (!carritoUsuario || !(carritoUsuario.products?.length ?? 0)) {
+      throw new BadRequestException('El carrito está vacío');
+    }
+
+    const productos = await this.jsonHandler.readData<Product>('product');
+    const insufficientProducts = this.getInsufficientStockProducts(carritoUsuario, productos);
+
+    if (insufficientProducts.length > 0) {
+      throw new BadRequestException(
+        `La cantidad de unidades seleccionadas supera el espacio actual del carrito. No tienen stock suficiente: ${insufficientProducts.join(', ')}`,
+      );
+    }
+
+    const updatedProducts = productos.map((product) => {
+      const cartItem = carritoUsuario.products.find((item) => item.product.number === product.number);
+
+      if (!cartItem) {
+        return product;
+      }
+
+      return {
+        ...product,
+        available: Math.max(0, Math.floor(Number(product.available ?? 0)) - Math.floor(Number(cartItem.quantity ?? 0))),
+      };
+    });
+
+    carritoUsuario.products = [];
+
+    try {
+      await this.jsonHandler.writeData('product', updatedProducts);
+      await this.jsonHandler.writeData('cart', carritos);
+    } catch (err) {
+      throw new InternalServerErrorException('Error al procesar la compra');
     }
 
     return carritoUsuario;

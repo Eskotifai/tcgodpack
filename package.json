@@ -1,0 +1,9 @@
+{
+  "name": "tcgodpack",
+  "private": true,
+  "scripts": {
+    "dev": "npx --yes concurrently \"npm run start:dev --prefix tcgodpack-backend\" \"npm start --prefix tcgodpack-frontend\"",
+    "dev:backend": "npm run start:dev --prefix tcgodpack-backend",
+    "dev:frontend": "npm start --prefix tcgodpack-frontend"
+  }
+}

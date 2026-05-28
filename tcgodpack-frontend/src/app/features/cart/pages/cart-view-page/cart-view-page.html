@@ -1,5 +1,18 @@
 <div class="cart-page">
 	<app-navbar></app-navbar>
+
+	<div
+		*ngIf="toastMessage"
+		class="checkout-toast"
+		[class.is-visible]="toastVisible"
+		[class.is-success]="toastType === 'success'"
+		[class.is-error]="toastType === 'error'"
+		role="status"
+		aria-live="polite"
+	>
+		{{ toastMessage }}
+	</div>
+
 	<div class="cart-hero">
 		<div>
 			<h2>Resumen de compra</h2>
@@ -21,7 +34,6 @@
 					<article class="cart-item" *ngFor="let item of (c.products ?? []); trackBy: trackByProductNumber">
 						<div class="item-image-wrap">
 							<img class="item-image" [src]="item.product.imageUrl" [alt]="item.product.name" />
-							<div class="item-quantity-badge">x{{ item.quantity }}</div>
 						</div>
 
 						<div class="item-content">
@@ -75,7 +87,9 @@
 					<strong>${{ grandTotal | number:'1.2-2' }}</strong>
 				</div>
 
-				<button class="checkout-btn">Proceder al pago</button>
+				<button class="checkout-btn" type="button" (click)="proceedToCheckout()" [disabled]="checkoutLoading || loading || (cart?.products?.length ?? 0) === 0">
+					{{ checkoutLoading ? 'Procesando compra...' : 'Proceder al pago' }}
+				</button>
 			</div>
 		</aside>
 	</div>

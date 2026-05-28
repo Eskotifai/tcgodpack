@@ -1,14 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Product } from '../shared/interfaces/product';
 
-export interface Product {
-  name: string;
-  number: number;
-  price: number;
-  available: number;
-  imageUrl: string;
-}
+export type { Product } from '../shared/interfaces/product';
 
 @Injectable({
   providedIn: 'root',

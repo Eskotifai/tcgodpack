@@ -28,4 +28,15 @@ export class CartController {
   async verMiCarrito(@Query('email') email: string): Promise<Cart> {
     return await this.cartService.obtenerPorEmail(email);
   }
+
+  // POST http://localhost:3000/cart/checkout
+  @Post('checkout')
+  async procederAlPago(
+    @Body()
+    body: {
+      email: string;
+    },
+  ): Promise<Cart> {
+    return await this.cartService.procesarCompra(body.email);
+  }
 }
