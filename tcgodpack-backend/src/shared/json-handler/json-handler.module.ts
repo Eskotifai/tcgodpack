@@ -3,5 +3,6 @@ import { JsonHandlerService } from './json-handler.service';
 
 @Module({
   providers: [JsonHandlerService],
+  exports: [JsonHandlerService],
 })
 export class JsonHandlerModule {}

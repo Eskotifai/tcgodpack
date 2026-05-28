@@ -12,19 +12,19 @@ export class CartController {
   async añadirAlCarrito(
     @Body()
     body: {
-      username: string;
+      email: string;
       productName: string;
       quantity: number;
     },
   ): Promise<Cart> {
     const itemProducto = new CartProduct(body.productName, body.quantity);
-    return await this.cartService.agregarProducto(body.username, itemProducto);
+    return await this.cartService.agregarProducto(body.email, itemProducto);
   }
 
-  // GET http://localhost:3000/cart?username=cliente@gmail.com
+  // GET http://localhost:3000/cart?email=cliente@gmail.com
   // Devuelve el objeto completo del carrito de ese usuario
   @Get()
-  async verMiCarrito(@Query('username') username: string): Promise<Cart> {
-    return await this.cartService.obtenerPorUsuario(username);
+  async verMiCarrito(@Query('email') email: string): Promise<Cart> {
+    return await this.cartService.obtenerPorEmail(email);
   }
 }

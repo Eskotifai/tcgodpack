@@ -21,7 +21,7 @@ export class SignupComponent {
 
   signupForm = this.fb.nonNullable.group({
     name: ['', [Validators.required]],
-    username: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(4)]],
     role: ['customer'] // Por defecto es cliente
   });
