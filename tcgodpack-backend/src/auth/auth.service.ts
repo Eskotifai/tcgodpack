@@ -15,8 +15,7 @@ export class AuthService {
     if (!usuario || usuario.password !== password) {
       throw new UnauthorizedException('Usuario o contraseña incorrectos');
     }
-
-    // Ahora que limpiamos el JSON, usuario.email existirá perfectamente
+    
     const token = Buffer.from(`${usuario.email}:${usuario.role}`).toString('base64');
     
     return { 
