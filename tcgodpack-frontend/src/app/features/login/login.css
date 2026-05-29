@@ -1,0 +1,113 @@
+/* Contenedor principal con líneas rectas y limpias */
+.login-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2.5rem 2rem;
+  background-color: #ffffff;
+  border: 1px solid #d8e2ef; /* Gris claro con un ligero matiz azulado */
+  border-radius: 0px; /* Bordes completamente rectos */
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04); /* Sombra muy sutil */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Título en Azul Oxford Profundo */
+.login-container h2 {
+  color: #0b132b; /* Azul Oxford muy oscuro */
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1.65rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase; /* Un toque sutil de sofisticación */
+}
+
+/* Grupos del formulario */
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Etiquetas del formulario */
+.form-group label {
+  font-size: 0.85rem;
+  color: #4a5568; /* Gris grafito */
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Inputs completamente rectos */
+.form-group input {
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 0px; /* Bordes rectos */
+  color: #1e293b;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+}
+
+/* Enfoque del input con el nuevo azul oscuro */
+.form-group input:focus {
+  background-color: #ffffff;
+  border-color: #0b132b; /* Azul Oxford al enfocar */
+  box-shadow: none; /* Eliminamos el brillo redondo para mantener líneas duras */
+}
+
+/* Base de botones rectos */
+button {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 0px; /* Bordes rectos */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 0.75rem;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Botón de Ingresar: Azul Oxford Profundo */
+button[type="submit"] {
+  background-color: #0b132b;
+  color: #ffffff;
+  border: 1px solid #0b132b;
+}
+
+button[type="submit"]:hover {
+  background-color: #1c2541; /* Un tono ligeramente más claro al pasar el mouse */
+  border-color: #1c2541;
+}
+
+/* Botón de Crear Perfil: Contraste Arena/Dorado sutil */
+button[routerLink="/signup"], button[type="button"] {
+  background-color: #dfd5c6; /* Color arena/champagne sofisticado */
+  color: #0b132b; /* Texto en el azul oscuro para amarrar el diseño */
+  border: 1px solid #dfd5c6;
+}
+
+button[routerLink="/signup"]:hover, button[type="button"]:hover {
+  background-color: #d3c5b2; /* Oscurece un poco al pasar el mouse */
+  border-color: #d3c5b2;
+}
+
+/* Mensaje de error adaptado a la estética recta */
+.error-message {
+  margin-top: 1.25rem;
+  padding: 0.8rem;
+  background-color: #fff5f5;
+  color: #c53030;
+  border-left: 4px solid #c53030; /* Detalle elegante en el borde izquierdo */
+  border-top: 1px solid #feb2b2;
+  border-right: 1px solid #feb2b2;
+  border-bottom: 1px solid #feb2b2;
+  border-radius: 0px;
+  font-size: 0.85rem;
+  text-align: center;
+}

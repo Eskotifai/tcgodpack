@@ -1,0 +1,15 @@
+{
+  "name": "tcgodpack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "license": "ISC",
+  "author": "george",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx --yes concurrently \"npm run start:dev --prefix tcgodpack-backend\" \"npm start --prefix tcgodpack-frontend\"",
+    "dev:backend": "npm run start:dev --prefix tcgodpack-backend",
+    "dev:frontend": "npm start --prefix tcgodpack-frontend"
+  }
+}

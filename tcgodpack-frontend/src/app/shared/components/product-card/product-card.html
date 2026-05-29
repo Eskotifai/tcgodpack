@@ -1,0 +1,45 @@
+<article class="product-card">
+	<img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
+
+	<div class="product-info">
+		<div class="product-header">
+			<div>
+				<h3 class="product-name">{{ product.name }}</h3>
+				<p class="product-price">${{ product.price }}</p>
+			</div>
+			<span class="product-number">#{{ product.number }}</span>
+		</div>
+
+		<p class="product-available">Disponibles: {{ product.available }}</p>
+
+		<div class="product-actions">
+			<button type="button" class="reviews-btn" (click)="viewReviews.emit(product.name)">Reseñas</button>
+			<button
+				class="action-button action-button-primary"
+				type="button"
+				(click)="toggleQuantitySelector()"
+				[disabled]="cartLimitReached"
+			>
+				{{ actionButtonLabel }}
+			</button>
+		</div>
+
+		<div class="quantity-panel" [class.is-visible]="quantitySelectorVisible" [attr.aria-hidden]="!quantitySelectorVisible">
+			<div class="quantity-stepper" aria-label="Selector de unidades">
+				<button class="stepper-button" type="button" (click)="decreaseQuantity()" [disabled]="!canDecreaseQuantity">
+					−
+				</button>
+				<span class="stepper-value">{{ quantity }}</span>
+				<button class="stepper-button" type="button" (click)="increaseQuantity()" [disabled]="!canIncreaseQuantity">
+					+
+				</button>
+			</div>
+
+			<div class="quantity-hint">Máximo disponible: {{ maxQuantity }}</div>
+
+			<button class="confirm-button" type="button" (click)="confirmAddToCart()" [disabled]="cartLimitReached">
+				{{ confirmButtonLabel }}
+			</button>
+		</div>
+	</div>
+</article>

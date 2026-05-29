@@ -1,0 +1,40 @@
+<nav class="store-topbar">
+  <span class="store-name">tcgodpack</span>
+  <div class="topbar-actions">
+    <button class="topbar-btn" (click)="openCart()"> Carrito </button>
+    <button class="topbar-btn"> Perfil </button>
+    <button class="topbar-btn logout-btn" (click)="logout()">Cerrar sesión</button>
+  </div>
+</nav>
+
+<div class="catalog-container">
+  <div class="catalog-header">
+    <h2>Productos disponibles</h2>
+    <p class="welcome-text" *ngIf="currentUser()">Usuario: <strong>{{ currentUser() }}</strong></p>
+  </div>
+
+  <div
+    *ngIf="feedbackMessage()"
+    class="catalog-feedback"
+    [class.is-visible]="feedbackVisible()"
+    [class.is-success]="feedbackType() === 'success'"
+    [class.is-error]="feedbackType() === 'error'"
+    role="status"
+    aria-live="polite"
+  >
+    {{ feedbackMessage() }}
+  </div>
+
+  <p class="empty-message" *ngIf="products().length === 0">No hay productos disponibles.</p>
+
+  <div class="product-grid" *ngIf="products().length > 0">
+    <app-product-card
+      *ngFor="let product of products(); trackBy: trackByNumber"
+      [product]="product"
+      [currentUser]="currentUser()"
+      [cartRemainingUnits]="cartRemainingUnits()"
+      (addToCartFeedback)="handleProductFeedback($event.message, $event.type)"
+      (viewReviews)="navegarAResenas(product.name)"
+    ></app-product-card>
+  </div>
+</div>
