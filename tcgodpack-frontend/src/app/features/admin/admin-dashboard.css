@@ -372,3 +372,54 @@
   color: #64748b;
   font-style: italic;
 }
+
+/* Contenedor para centrar y estructurar la miniatura */
+.table-img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Reglas de la imagen para evitar desbordes */
+.table-product-img {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f8fafc; /* Fondo neutro por si la imagen tarda en cargar */
+}
+
+/* Alineación vertical central en las celdas para que todo quede simétrico */
+.admin-table td {
+  vertical-align: middle;
+}
+
+
+/* Variación para la caja cuando hereda un estado de error crítico */
+.error-box {
+  border-top: 4px solid #ef4444; /* Rojo de advertencia sutil */
+}
+
+.error-detail-text {
+  margin: 1.5rem 0;
+  color: #1e293b;
+  font-size: 1.05rem;
+}
+
+.error-detail-text strong {
+  color: #ef4444;
+}
+
+/* Botón de acción para el estado de error */
+.action-btn.danger {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: 1px solid #ef4444;
+}
+
+.action-btn.danger:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}

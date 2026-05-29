@@ -16,10 +16,9 @@ export class AdminDashboardComponent {
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
 
-  // 🛠️ Expandido: Añadimos 'consultar' al control de estado
-  vistaActiva: 'menu' | 'agregar' | 'confirmacion' | 'consultar' = 'menu';
+  // 🛠️ Expandido: Añadimos 'error' al control de estados de la UI
+  vistaActiva: 'menu' | 'agregar' | 'confirmacion' | 'consultar' | 'error' = 'menu';
 
-  // 🛠️ Guardará la colección de cartas recuperadas del backend
   listaProductos: Product[] = [];
 
   carta: Product = {
@@ -32,19 +31,18 @@ export class AdminDashboardComponent {
 
   errorAlert = '';
 
-  cambiarVista(vista: 'menu' | 'agregar' | 'confirmacion' | 'consultar'): void {
+  cambiarVista(vista: 'menu' | 'agregar' | 'confirmacion' | 'consultar' | 'error'): void {
     this.vistaActiva = vista;
-    this.errorAlert = '';
     
+    // Solo blanqueamos el modelo si el usuario va explícitamente a ingresar un producto nuevo desde cero
     if (vista === 'agregar') {
+      this.errorAlert = '';
       this.carta = { name: '', number: 0, price: 0, available: 0, imageUrl: '' };
     }
   }
 
-  
   cargarYConsultarProductos(): void {
     this.errorAlert = '';
-    
     
     this.productService.getProducts().subscribe({
       next: (products: Product[]) => {
@@ -53,11 +51,12 @@ export class AdminDashboardComponent {
       },
       error: (err: HttpErrorResponse) => {
         this.errorAlert = err.error?.message || 'No se pudo cargar la lista de productos del servidor.';
+        this.vistaActiva = 'error'; // También redirige aquí si falla la carga del inventario
       }
     });
   }
 
-  guardarCarta(): void {
+guardarCarta(): void {
     this.errorAlert = '';
 
     this.productService.createProduct(this.carta).subscribe({
@@ -65,12 +64,36 @@ export class AdminDashboardComponent {
         this.cambiarVista('confirmacion');
       },
       error: (err: HttpErrorResponse) => { 
-        this.errorAlert = err.error?.message || 'Error de conexión con el servidor.';
+        console.error('Error completo recibido:', err); // Para que sigas teniendo el rastro en consola
+
+        //  Extracción robusta del mensaje de error
+        if (err.error && typeof err.error === 'object') {
+          // NestJS suele devolver { statusCode: 400, message: "..." o ["..."], error: "Bad Request" }
+          if (Array.isArray(err.error.message)) {
+            this.errorAlert = err.error.message.join(', ');
+          } else if (err.error.message) {
+            this.errorAlert = err.error.message;
+          } else {
+            this.errorAlert = err.message || 'Error interno del servidor.';
+          }
+        } else if (typeof err.error === 'string') {
+          this.errorAlert = err.error;
+        } else {
+          this.errorAlert = err.statusText || 'Error inesperado de conexión.';
+        }
+
+        this.vistaActiva = 'error';
       }
     });
   }
 
+  // 🛠️ NUEVO MÉTODO: Permite volver a la pantalla de edición sin vaciar los inputs del formulario
+  confirmarYRegresar(): void {
+    this.vistaActiva = 'agregar';
+    this.errorAlert = '';
+  }
+
   irAlLogin(): void {
-  this.router.navigate(['/login']);
-}
+    this.router.navigate(['/login']);
+  }
 }
