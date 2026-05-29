@@ -1,51 +1,136 @@
 <nav class="store-topbar">
   <span class="store-name">tcgodpack — Panel de Control</span>
   <div class="topbar-actions">
-    <button class="topbar-btn" routerLink="/catalog">👁️ Ver Catálogo</button>
+    <!-- El botón de inicio solo aparece si no estás en el menú principal -->
+    @if (vistaActiva !== 'menu') {
+      <button class="topbar-btn" (click)="cambiarVista('menu')">Inicio Panel</button>
+    }
+    <!-- Redirección directa por enrutador de Angular -->
+    <button class="topbar-btn" routerLink="/login">Regresar al Login</button>
   </div>
 </nav>
 
 <div class="catalog-container">
-  <div class="catalog-header">
-    <h2>Registrar Nueva Carta</h2>
-    <p class="welcome-text">Ingresa los detalles para expandir el inventario de manera atómica.</p>
-  </div>
 
-  <form (ngSubmit)="guardarCarta()" #cardForm="ngForm" class="admin-form">
-    <div class="form-group">
-      <label for="name">Nombre de la Carta / Expansión</label>
-      <input type="text" id="name" name="name" [(ngModel)]="carta.name" required placeholder="Ej: LUGIA FETCH - NEO GENESIS">
+  <!-- ================= VISTA 1: MENÚ PRINCIPAL ================= -->
+  @if (vistaActiva === 'menu') {
+    <div class="catalog-header">
+      <h2>Panel de Administración</h2>
+      <p class="welcome-text">Selecciona una acción para gestionar el inventario del sistema.</p>
     </div>
 
-    <div class="form-group">
-      <label for="number">Número de Colección Único (ID)</label>
-      <input type="number" id="number" name="number" [(ngModel)]="carta.number" min="1" required placeholder="Ej: 7">
+    <div class="admin-menu-grid">
+      <button class="menu-btn success-btn" (click)="cambiarVista('agregar')">
+         Agregar Producto
+      </button>
+
+      <button class="menu-btn warning-btn">
+         Editar Producto (Próximamente)
+      </button>
+
+      <button class="menu-btn danger-btn">
+         Eliminar Producto (Próximamente)
+      </button>
+
+      <button class="menu-btn info-btn" (click)="cargarYConsultarProductos()">
+         Consultar Lista de Productos
+      </button>
     </div>
-
-    <div class="form-group-row">
-      <div class="form-group">
-        <label for="price">Precio de Mercado ($)</label>
-        <input type="number" id="price" name="price" [(ngModel)]="carta.price" min="0" required placeholder="Ej: 280.00">
-      </div>
-
-      <div class="form-group">
-        <label for="available">Unidades en Stock</label>        
-        <input type="number" id="available" name="available" [(ngModel)]="carta.available" min="0" required placeholder="Ej: 3">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="imageUrl">URL de la Imagen Oficial</label>
-      <input type="url" id="imageUrl" name="imageUrl" [(ngModel)]="carta.imageUrl" required placeholder="https://images.pokemontcg.io/swsh12pt5/gg44_hires.png">
-    </div>
-
-    <button type="submit" class="submit-btn" [disabled]="!cardForm.valid">Guardar en Inventario</button>
-  </form>
-
-  @if (successAlert) {
-    <div class="alert success">{{ successAlert }}</div>
   }
-  
+
+  <!-- ================= VISTA 2: FORMULARIO AGREGAR ================= -->
+  @if (vistaActiva === 'agregar') {
+    <div class="catalog-header">
+      <button class="back-btn" (click)="cambiarVista('menu')">Volver al Menú</button>
+      <h2>Registrar Nueva Carta</h2>
+      <p class="welcome-text">Ingresa los detalles para expandir el inventario de manera atómica.</p>
+    </div>
+
+    <form (ngSubmit)="guardarCarta()" #cardForm="ngForm" class="admin-form">
+      <div class="form-group">
+        <label for="name">Nombre de la Carta / Expansión</label>
+        <input type="text" id="name" name="name" [(ngModel)]="carta.name" required placeholder="Ej: LUGIA FETCH - NEO GENESIS">
+      </div>
+
+      <div class="form-group">
+        <label for="number">Número de Colección Único (ID)</label>
+        <input type="number" id="number" name="number" [(ngModel)]="carta.number" min="1" required placeholder="Ej: 7">
+      </div>
+
+      <div class="form-group-row">
+        <div class="form-group">
+          <label for="price">Precio de Mercado ($)</label>
+          <input type="number" id="price" name="price" [(ngModel)]="carta.price" min="0" required placeholder="Ej: 280.00">
+        </div>
+
+        <div class="form-group">
+          <label for="available">Unidades en Stock</label>
+          <input type="number" id="available" name="available" [(ngModel)]="carta.available" min="0" required placeholder="Ej: 3">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="imageUrl">URL de la Imagen Oficial</label>
+        <input type="url" id="imageUrl" name="imageUrl" [(ngModel)]="carta.imageUrl" required placeholder="https://images.pokemontcg.io/swsh12pt5/gg44_hires.png">
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="!cardForm.valid">Guardar en Inventario</button>
+    </form>
+  }
+
+  <!-- ================= VISTA 3: CONFIRMACIÓN POST-GUARDADO ================= -->
+  @if (vistaActiva === 'confirmacion') {
+    <div class="confirm-box">      
+      <h2>¡Producto Registrado con Éxito!</h2>
+      <p>La carta ha sido añadida de manera atómica al inventario.</p>
+      
+      <div class="confirm-actions">
+        <button class="action-btn primary" (click)="cambiarVista('agregar')">
+           Agregar otro producto
+        </button>
+        <button class="action-btn secondary" (click)="cambiarVista('menu')">
+           Regresar al menú
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ================= VISTA 4: TABLA DE CONSULTA DE PRODUCTOS ================= -->
+  @if (vistaActiva === 'consultar') {
+    <div class="catalog-header">
+      <button class="back-btn" (click)="cambiarVista('menu')">Volver al Menú</button>
+      <h2>Inventario Actual</h2>
+      <p class="welcome-text">Lista completa de cartas almacenadas en el sistema de tcgodpack.</p>
+    </div>
+
+    <div class="table-responsive">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Carta / Expansión</th>
+            <th>Precio</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (prod of listaProductos; track prod.number) {
+            <tr>
+              <td class="text-center font-bold">{{ prod.number }}</td>
+              <td>{{ prod.name }}</td>
+              <td class="text-right">${{ prod.price }}</td>
+              <td class="text-center">{{ prod.available }} u.</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="text-center empty-message">No hay productos registrados en el inventario.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
   @if (errorAlert) {
     <div class="alert error">{{ errorAlert }}</div>
   }

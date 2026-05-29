@@ -16,7 +16,12 @@ export class AdminDashboardComponent {
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
 
-  
+  // 🛠️ Expandido: Añadimos 'consultar' al control de estado
+  vistaActiva: 'menu' | 'agregar' | 'confirmacion' | 'consultar' = 'menu';
+
+  // 🛠️ Guardará la colección de cartas recuperadas del backend
+  listaProductos: Product[] = [];
+
   carta: Product = {
     name: '',
     number: 0,   
@@ -25,21 +30,47 @@ export class AdminDashboardComponent {
     imageUrl: ''
   };
 
-  successAlert = '';
   errorAlert = '';
 
+  cambiarVista(vista: 'menu' | 'agregar' | 'confirmacion' | 'consultar'): void {
+    this.vistaActiva = vista;
+    this.errorAlert = '';
+    
+    if (vista === 'agregar') {
+      this.carta = { name: '', number: 0, price: 0, available: 0, imageUrl: '' };
+    }
+  }
+
+  
+  cargarYConsultarProductos(): void {
+    this.errorAlert = '';
+    
+    
+    this.productService.getProducts().subscribe({
+      next: (products: Product[]) => {
+        this.listaProductos = products;
+        this.cambiarVista('consultar');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errorAlert = err.error?.message || 'No se pudo cargar la lista de productos del servidor.';
+      }
+    });
+  }
+
   guardarCarta(): void {
-    this.successAlert = '';
     this.errorAlert = '';
 
     this.productService.createProduct(this.carta).subscribe({
       next: (res: Product) => { 
-        this.successAlert = `✅ ¡${res.name} añadida exitosamente al stock con ID ${res.number}!`;
-        setTimeout(() => this.router.navigate(['/catalog']), 1500);
+        this.cambiarVista('confirmacion');
       },
       error: (err: HttpErrorResponse) => { 
         this.errorAlert = err.error?.message || 'Error de conexión con el servidor.';
       }
     });
   }
+
+  irAlLogin(): void {
+  this.router.navigate(['/login']);
+}
 }
