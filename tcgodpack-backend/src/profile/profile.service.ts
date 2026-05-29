@@ -18,10 +18,10 @@ export class ProfileService implements OnModuleInit {
     const existeAdmin = usuarios.some((u) => u.role === UserRole.ADMIN);
 
     if (!existeAdmin) {
-      console.log('⚙️ Inicializando el administrador único de tcgodpack...');
+      console.log('Inicializando el administrador único de tcgodpack...');
       const adminMaestro = new Profile(
         'admin@tcgodpack.com',
-        '1234', // Contraseña maestra por defecto
+        '12345678', // Contraseña maestra por defecto
         'TCG God Pack Admin',
         'Admin',
         UserRole.ADMIN,
