@@ -44,84 +44,92 @@
 
     @if (!loading && reviewsLoaded && reviews.length > 0) {
       <section class="reviews-list" aria-label="Lista de reseñas">
-        <article 
-          class="review-card" 
-          *ngFor="let item of reviews"
-        [ngClass]="{
-          'rating-low': item.rating <= 1,
-          'rating-medium': item.rating === 2,
-          'rating-high': item.rating >= 3
-        }"
-      >
-        <div class="review-header-info">
-          <span class="user-email">{{ item.email }}</span>
-          <div class="review-rating">
-            <span class="rating-label">
-              Satisfacción:
-              <strong [ngSwitch]="item.rating">
-                <ng-container *ngSwitchCase="1">Mala</ng-container>
-                <ng-container *ngSwitchCase="2">Regular</ng-container>
-                <ng-container *ngSwitchDefault>Buena</ng-container>
-              </strong>
-            </span>
-          </div>
-        </div>
+        @for (item of reviews; track $index) {
+          <article 
+            class="review-card" 
+            [ngClass]="{
+              'rating-low': item.rating <= 1,
+              'rating-medium': item.rating === 2,
+              'rating-high': item.rating >= 3
+            }"
+          >
+            <div class="review-header-info">
+              <span class="user-email">{{ item.email }}</span>
+              <div class="review-rating">
+                <span class="rating-label">
+                  Satisfacción:
+                  <strong [ngSwitch]="item.rating">
+                    <ng-container *ngSwitchCase="1">Mala</ng-container>
+                    <ng-container *ngSwitchCase="2">Regular</ng-container>
+                    <ng-container *ngSwitchDefault>Buena</ng-container>
+                  </strong>
+                </span>
+              </div>
+            </div>
 
-        <div class="review-body">
-          <blockquote class="review-comment">"{{ item.comment }}"</blockquote>
-        </div>
-      </article>
+            <div class="review-body">
+              <blockquote class="review-comment">"{{ item.comment }}"</blockquote>
+            </div>
+          </article>
+        }
       </section>
     }
 
     <section class="add-review-section">
-      <h3>Añadir mi reseña</h3>
-      <form class="review-form" (ngSubmit)="onSubmitReview()">
-        <div class="form-group">
-          <label for="formRating">Grado de Satisfacción</label>
-          <select 
-            id="formRating" 
-            name="rating" 
-            [(ngModel)]="newReview.rating" 
-            required
-          >
-            <option [ngValue]="3">3 - Buena </option>
-            <option [ngValue]="2">2 - Regular </option>
-            <option [ngValue]="1">1 - Mala </option>
-          </select>
+      @if (hasAlreadyReviewed) {
+        <div class="already-reviewed-message">
+          <h3>¡Gracias por tu opinión!</h3>
+          <p>Ya has compartido tu reseña sobre este producto con la comunidad.</p>
         </div>
+      } @else {
+        <h3>Añadir mi reseña</h3>
+        <form class="review-form" (ngSubmit)="onSubmitReview()">
+          <div class="form-group">
+            <label for="formRating">Grado de Satisfacción</label>
+            <select 
+              id="formRating" 
+              name="rating" 
+              [(ngModel)]="newReview.rating" 
+              required
+            >
+              <option [ngValue]="3">3 - Buena</option>
+              <option [ngValue]="2">2 - Regular</option>
+              <option [ngValue]="1">1 - Mala</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="formComment">Tu comentario</label>
-          <textarea 
-            id="formComment" 
-            name="comment" 
-            rows="4" 
-            [(ngModel)]="newReview.comment" 
-            placeholder="Escribe aquí de forma honesta tu opinión sobre el producto..." 
-            required
-          ></textarea>
-        </div>
+          <div class="form-group">
+            <label for="formComment">Tu comentario</label>
+            <textarea 
+              id="formComment" 
+              name="comment" 
+              rows="4" 
+              [(ngModel)]="newReview.comment" 
+              placeholder="Escribe aquí de forma honesta tu opinión sobre el producto..." 
+              required
+            ></textarea>
+          </div>
 
-        <div class="form-actions">
-          <button 
-            type="submit" 
-            class="submit-review-btn" 
-            [disabled]="submitting || !canWriteReview"
-          >
-            {{ submitting ? 'Enviando...' : 'Añadir mi reseña' }}
-          </button>
-        </div>
-      </form>
-      @if (!canWriteReview) {
-        <div class="permission-message">
-          @if (!currentUserEmail) {
-            <p>Debes iniciar sesión para escribir una reseña.</p>
-          }
-          @if (currentUserEmail) {
-            <p>Solo los usuarios que ya compraron este producto pueden escribir reseñas.</p>
-          }
-        </div>
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              class="submit-review-btn" 
+              [disabled]="submitting || !canWriteReview"
+            >
+              {{ submitting ? 'Enviando...' : 'Añadir mi reseña' }}
+            </button>
+          </div>
+        </form>
+
+        @if (!canWriteReview) {
+          <div class="permission-message">
+            @if (!currentUserEmail) {
+              <p>Debes iniciar sesión para escribir una reseña.</p>
+            } @else {
+              <p>Solo los usuarios que ya compraron este producto pueden escribir reseñas.</p>
+            }
+          </div>
+        }
       }
     </section>
 

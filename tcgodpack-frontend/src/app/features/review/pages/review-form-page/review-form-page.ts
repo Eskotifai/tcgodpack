@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 
-// Estructura idéntica a tu entidad del Backend y Modelo del Frontend
 export class Review {
   constructor(
     public productName: string,
@@ -18,17 +17,14 @@ export class Review {
 @Component({
   selector: 'app-product-reviews',
   standalone: true,
-  imports: [FormsModule,CommonModule,
-],
+  imports: [FormsModule, CommonModule],
   templateUrl: './review-form-page.html',
   styleUrls: ['./review-form-page.css']
 })
 export class ProductReviewsComponent implements OnInit {
-  // Configuración del Endpoint (Ajusta el puerto según tu entorno NestJS)
   private readonly apiUrl = 'http://localhost:3000/reviews';
   private readonly profileUrl = 'http://localhost:3000/profile';
 
-  // Variables de Estado
   reviews: Review[] = [];
   currentProductName: string = '';
   loading: boolean = false;
@@ -37,8 +33,8 @@ export class ProductReviewsComponent implements OnInit {
   currentUserEmail: string | null = null;
   canWriteReview: boolean = false;
   reviewLoadError: string | null = null;
+  hasAlreadyReviewed: boolean = false;
 
-  // Objeto enlazado con el formulario bidireccional (ngModel)
   newReview: Review = new Review(this.currentProductName, '', '', 3);
 
   constructor(
@@ -46,6 +42,7 @@ export class ProductReviewsComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly authService: AuthService,
     private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -88,10 +85,14 @@ export class ProductReviewsComponent implements OnInit {
       .get<any>(`${this.profileUrl}?email=${encodeURIComponent(this.currentUserEmail)}`)
       .subscribe({
         next: (profile) => {
-          const purchased: string[] = Array.isArray(profile.purchasedProducts)
-            ? profile.purchasedProducts.map((p: any) => String(p).toLowerCase())
-            : [];
-          this.canWriteReview = purchased.includes(this.currentProductName.toLowerCase());
+          // Engañamos a Angular con setTimeout para evitar NG0100
+          setTimeout(() => {
+            const purchased: string[] = Array.isArray(profile.purchasedProducts)
+              ? profile.purchasedProducts.map((p: any) => String(p).toLowerCase())
+              : [];
+            this.canWriteReview = purchased.includes(this.currentProductName.toLowerCase());
+            this.cdr.detectChanges();
+          });
         },
         error: () => {
           this.canWriteReview = false;
@@ -105,7 +106,6 @@ export class ProductReviewsComponent implements OnInit {
     this.reviewsLoaded = false;
     this.reviews = [];
     const url = `${this.apiUrl}/by-product?productName=${encodeURIComponent(productName)}`;
-    console.debug('Cargando reseñas para producto:', productName, url);
 
     this.http.get<Review[]>(url).subscribe({
       next: (data) => {
@@ -113,12 +113,24 @@ export class ProductReviewsComponent implements OnInit {
         this.reviewLoadError = null;
         this.loading = false;
         this.reviewsLoaded = true;
+        this.cdr.detectChanges();
+
+        if (this.currentUserEmail) {
+          // El setTimeout asegura que esta evaluación sea en el próximo ciclo
+          setTimeout(() => {
+            this.hasAlreadyReviewed = this.reviews.some(
+              r => r.email.toLowerCase() === this.currentUserEmail!.toLowerCase()
+            );
+            this.cdr.detectChanges();
+          });
+        }
       },
       error: (err) => {
         console.error('Error al descargar opiniones:', err);
-        this.reviewLoadError = 'No se pudieron cargar las reseñas. Revisa la consola del navegador.';
+        this.reviewLoadError = 'No se pudieron cargar las reseñas.';
         this.loading = false;
         this.reviewsLoaded = true;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -127,7 +139,6 @@ export class ProductReviewsComponent implements OnInit {
     this.loadReviewsForProduct(this.currentProductName);
   }
 
-  // Envía la nueva valoración mapeando al POST del controlador NestJS
   onSubmitReview(): void {
     if (!this.currentUserEmail || !this.currentProductName) {
       alert('Debes iniciar sesión y seleccionar un producto para enviar una reseña.');
@@ -150,14 +161,17 @@ export class ProductReviewsComponent implements OnInit {
 
     this.http.post<Review>(this.apiUrl, this.newReview).subscribe({
       next: (createdReview) => {
-        this.reviews.push(createdReview);
+        this.reviews = [...this.reviews, createdReview];
         this.newReview = new Review(this.currentProductName, this.currentUserEmail!, '', 3);
         this.submitting = false;
+        this.hasAlreadyReviewed = true;
+        this.cdr.detectChanges();
         alert('¡Gracias! Tu reseña ha sido añadida con éxito.');
       },
       error: (err) => {
         console.error('Error al registrar tu reseña:', err);
         this.submitting = false;
+        this.cdr.detectChanges();
         alert('Hubo un inconveniente procesando tu comentario. Intenta de nuevo.');
       }
     });
