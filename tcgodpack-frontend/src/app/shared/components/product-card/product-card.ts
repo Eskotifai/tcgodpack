@@ -24,6 +24,7 @@ export class ProductCard {
 
   quantity = 1;
   quantitySelectorVisible = false;
+  @Output() viewReviews = new EventEmitter<string>();
 
   constructor(private readonly cartService: CartService) {}
 

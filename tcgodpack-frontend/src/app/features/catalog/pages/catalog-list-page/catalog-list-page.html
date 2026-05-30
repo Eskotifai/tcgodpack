@@ -1,8 +1,9 @@
 <nav class="store-topbar">
   <span class="store-name">tcgodpack</span>
   <div class="topbar-actions">
-    <button class="topbar-btn" (click)="openCart()">🛒 Carrito</button>
-    <button class="topbar-btn">👤 Perfil</button>
+    <button class="topbar-btn" (click)="openCart()"> Carrito </button>
+    <button class="topbar-btn"> Perfil </button>
+    <button class="topbar-btn logout-btn" (click)="logout()">Cerrar sesión</button>
   </div>
 </nav>
 
@@ -33,6 +34,7 @@
       [currentUser]="currentUser()"
       [cartRemainingUnits]="cartRemainingUnits()"
       (addToCartFeedback)="handleProductFeedback($event.message, $event.type)"
+      (viewReviews)="navegarAResenas(product.name)"
     ></app-product-card>
   </div>
 </div>

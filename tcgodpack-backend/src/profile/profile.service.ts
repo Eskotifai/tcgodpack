@@ -44,6 +44,26 @@ export class ProfileService implements OnModuleInit {
     return usuarios.find((usuario) => usuario.email === correo);
   }
 
+  // Agrega nombres de productos comprados al perfil del usuario
+  async agregarProductosComprados(
+    email: string,
+    productNames: string[],
+  ): Promise<void> {
+    const usuarios = await this.obtenerTodosUsuarios();
+    const usuario = usuarios.find((u) => u.email === email);
+
+    if (!usuario) {
+      throw new ConflictException('Usuario no encontrado');
+    }
+
+    if (!Array.isArray(usuario.purchasedProducts)) {
+      usuario.purchasedProducts = [];
+    }
+
+    usuario.purchasedProducts.push(...productNames);
+    await this.jsonHandler.writeData('profile', usuarios);
+  }
+
   // Registra un nuevo cliente validando atómicamente duplicados
   async crearUsuario(profileData: Profile): Promise<Profile> {
     const email = String(profileData.email ?? '').trim().toLowerCase();

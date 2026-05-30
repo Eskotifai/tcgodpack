@@ -91,12 +91,15 @@ import { Injectable, BadRequestException, InternalServerErrorException } from '@
 import { Cart, CartProduct } from './cart.model';
 import { JsonHandlerService } from '../shared/json-handler/json-handler.service';
 import { Product } from '../product/product.model';
+import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class CartService {
   private static readonly maxUnitsInCart = 10;
 
-  constructor(private readonly jsonHandler: JsonHandlerService) {}
+  constructor(private readonly jsonHandler: JsonHandlerService,
+    private readonly profileService: ProfileService,
+  ) {}
 
   private async obtenerTodos(): Promise<Cart[]> {
     return this.jsonHandler.readData<Cart>('cart');
@@ -251,11 +254,14 @@ export class CartService {
       };
     });
 
+    const purchasedNames = carritoUsuario.products.map((item) => item.product.name);
+
     carritoUsuario.products = [];
 
     try {
       await this.jsonHandler.writeData('product', updatedProducts);
       await this.jsonHandler.writeData('cart', carritos);
+      await this.profileService.agregarProductosComprados(email, purchasedNames);
     } catch (err) {
       throw new InternalServerErrorException('Error al procesar la compra');
     }

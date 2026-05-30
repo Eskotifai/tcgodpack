@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { Review } from './review.model';
 import { ReviewsService } from './reviews.service';
 
@@ -18,6 +18,13 @@ export class ReviewsController {
       return this.reviewsService.obtenerPorEmail(email);
     }
     return this.reviewsService.obtenerTodasReviews();
+  }
+
+  @Get('by-product')
+  async obtenerResenasPorProducto(
+    @Query('productName') productName: string,
+  ): Promise<Review[]> {
+    return this.reviewsService.obtenerPorProducto(productName);
   }
 
   @Post()

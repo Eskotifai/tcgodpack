@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -106,8 +106,18 @@ export class CatalogListPage implements OnInit {
       this.refreshCartRemainingUnits();
     }
   }
+  navegarAResenas(productName: string): void {
+    this.router.navigate(['/review'], { 
+      queryParams: { productName: productName } 
+    });
+  }
 
   openCart(): void {
     this.router.navigate(['/cart']);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 }

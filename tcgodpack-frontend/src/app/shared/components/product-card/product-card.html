@@ -13,7 +13,7 @@
 		<p class="product-available">Disponibles: {{ product.available }}</p>
 
 		<div class="product-actions">
-			<button class="action-button action-button-secondary" type="button" disabled>Reseñas</button>
+			<button type="button" class="reviews-btn" (click)="viewReviews.emit(product.name)">Reseñas</button>
 			<button
 				class="action-button action-button-primary"
 				type="button"

@@ -65,3 +65,12 @@
   background-color:#0b132b;
   color:#ffffff;
 }
+
+.logout-btn{
+  border-color:#ef4444 !important;
+  color:#ef4444 !important;
+}
+.logout-btn:hover{
+  background-color:#ef4444 !important;
+  color:#ffffff !important;
+}

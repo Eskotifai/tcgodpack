@@ -6,6 +6,7 @@ import { CatalogListPage } from './features/catalog/pages/catalog-list-page/cata
 import { CartViewPage } from './features/cart/pages/cart-view-page/cart-view-page';
 import { AdminDashboardComponent } from './features/admin/admin-dashboard';
 import { adminGuard } from './core/guards/admin.guard';
+import { ProductReviewsComponent } from './features/review/pages/review-form-page/review-form-page';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'catalog', component: CatalogListPage },
   { path: 'cart', component: CartViewPage },
+  { path: 'review', component: ProductReviewsComponent },
   
   { 
     path: 'admin-dashboard', 
