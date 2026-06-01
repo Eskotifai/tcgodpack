@@ -1,0 +1,145 @@
+/* Contenedor externo consistente */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 1rem;
+}
+
+/* Caja principal idéntica a la de Login: Blanca y con líneas rectas */
+.auth-box {
+  width: 100%;
+  max-width: 400px; /* Misma anchura que el Login para perfecta simetría */
+  padding: 2.5rem 2rem;
+  background-color: #ffffff;
+  border: 1px solid #d8e2ef; /* Gris claro con matiz azulado */
+  border-radius: 0px; /* Bordes completamente rectos */
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Título en Azul Oxford Profundo */
+.auth-box h2 {
+  color: #0b132b;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1.65rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Grupos del formulario */
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Etiquetas consistentes en gris grafito */
+.form-group label {
+  font-size: 0.85rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Inputs rectos y limpios */
+.form-group input {
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 0px;
+  color: #1e293b;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Estilo del placeholder sutil */
+.form-group input::placeholder {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* Enfoque del input con el Azul Oxford */
+.form-group input:focus {
+  background-color: #ffffff;
+  border-color: #0b132b;
+}
+
+/* Botón "Registrarse": El único bloque que usa el Azul Oxford Profundo */
+button[type="submit"] {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background-color: #0b132b; /* Azul Oxford protagonista */
+  color: #ffffff;
+  border: 1px solid #0b132b;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-sizing: border-box;
+}
+
+/* Hover del botón principal */
+button[type="submit"]:hover:not(:disabled) {
+  background-color: #1c2541; /* Tono ligeramente más suave al pasar el mouse */
+  border-color: #1c2541;
+}
+
+/* Estado deshabilitado si el formulario de Angular es inválido */
+button[type="submit"]:disabled {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Texto inferior para alternar ventanas */
+.toggle-text {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* Enlace estilizado con el toque Arena/Champagne para mantener la paleta */
+.toggle-text a {
+  color: #0b132b;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid #dfd5c6; /* Línea inferior decorativa en arena */
+  padding-bottom: 2px;
+  transition: all 0.2s ease-in-out;
+}
+
+.toggle-text a:hover {
+  color: #1c2541;
+  border-bottom-color: #0b132b;
+}
+
+/* Alerta de error con estética recta */
+.error-alert {
+  margin-top: 1.25rem;
+  padding: 0.8rem;
+  background-color: #fff5f5;
+  color: #c53030;
+  border-left: 4px solid #c53030;
+  border-top: 1px solid #feb2b2;
+  border-right: 1px solid #feb2b2;
+  border-bottom: 1px solid #feb2b2;
+  border-radius: 0px;
+  font-size: 0.85rem;
+  text-align: center;
+}
