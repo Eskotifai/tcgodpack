@@ -23,7 +23,6 @@ export class Review {
 })
 
 export class ProductReviewsComponent implements OnInit {
-  // HTTP endpoints moved to ReviewService
 
   reviews: Review[] = [];
   currentProductName: string = '';

@@ -7,7 +7,7 @@ import { Review } from '../shared/interfaces/review';
 @Injectable({
   providedIn: 'root',
 })
-
+// aqui estan los endpoints de las reviews, se llama desde el review-form-page para obtener las reviews de un producto y para publicar una nueva review
 export class ReviewService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = 'http://localhost:3000';
