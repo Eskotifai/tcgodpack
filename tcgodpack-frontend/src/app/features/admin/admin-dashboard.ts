@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductService, Product } from '../../services/product.service'; 
+import { ProductService, Product } from '../../services/product-api-service'; 
 import { Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http'; 
 

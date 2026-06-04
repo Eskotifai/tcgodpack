@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { CartService } from '../../../services/cart.service';
+import { CartService } from '../../../services/cart-api-service';
 import { Product } from '../../../shared/interfaces/product';
 
 export type ProductCardFeedbackType = 'success' | 'error';

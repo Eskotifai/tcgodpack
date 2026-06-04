@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // 🌟 CRUCIAL: Debe estar importado aquí
 import { Router, RouterLink } from '@angular/router'; // 🌟 CRUCIAL: Ambos imports para la navegación
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/profile-api-service';
 
 @Component({
   selector: 'app-login',
