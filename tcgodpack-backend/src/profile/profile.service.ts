@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, OnModuleInit } from '@nestjs/common';
 import { Profile, UserRole } from './profile.model';
-import { JsonHandlerService } from '../shared/json-handler/json-handler.service';
+import { JsonHandlerService } from '../json-handler/json-handler.service';
 
 @Injectable()
 export class ProfileService implements OnModuleInit {

@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Review } from './review.model';
-import { JsonHandlerService } from '../shared/json-handler/json-handler.service';
+import { JsonHandlerService } from '../json-handler/json-handler.service';
 import { ProfileService } from '../profile/profile.service';
 
 @Injectable()

@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './product/products.module';
 import { CartModule } from './cart/cart.module';
 import { ReviewsModule } from './review/reviews.module';
-import { JsonHandlerModule } from './shared/json-handler/json-handler.module';
+import { JsonHandlerModule } from './json-handler/json-handler.module';
 
 @Module({
   imports: [ProfileModule, AuthModule, ProductsModule, CartModule, ReviewsModule, JsonHandlerModule],

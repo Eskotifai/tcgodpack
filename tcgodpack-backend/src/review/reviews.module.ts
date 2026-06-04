@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
-import { JsonHandlerModule } from '../shared/json-handler/json-handler.module';
+import { JsonHandlerModule } from '../json-handler/json-handler.module';
 import { ProfileModule } from '../profile/profile.module';
 
 @Module({

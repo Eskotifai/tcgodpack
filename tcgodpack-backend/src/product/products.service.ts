@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from './product.model';
-import { JsonHandlerService } from '../shared/json-handler/json-handler.service';
+import { JsonHandlerService } from '../json-handler/json-handler.service';
 
 @Injectable()
 export class ProductsService {
