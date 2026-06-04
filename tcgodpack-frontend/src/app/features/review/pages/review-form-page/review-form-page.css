@@ -97,9 +97,6 @@
   text-transform: uppercase;
 }
 
-/* ==========================================================================
-   TARJETAS Y LISTADO DE RESEÑAS
-   ========================================================================== */
 .reviews-list {
   display: flex;
   flex-direction: column;
@@ -189,9 +186,6 @@
   padding: 2.5rem 0;
 }
 
-/* ==========================================================================
-   FORMULARIO DE REGISTRO
-   ========================================================================== */
 .add-review-section {
   border-top: 2px solid #cbd5e1;
   padding-top: 2.5rem;

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../services/profile-api-service';
+import { ReviewService } from '../../../../services/review-api-service';
 
 export class Review {
   constructor(
@@ -21,9 +21,8 @@ export class Review {
   templateUrl: './review-form-page.html',
   styleUrls: ['./review-form-page.css']
 })
+
 export class ProductReviewsComponent implements OnInit {
-  private readonly apiUrl = 'http://localhost:3000/reviews';
-  private readonly profileUrl = 'http://localhost:3000/profile';
 
   reviews: Review[] = [];
   currentProductName: string = '';
@@ -38,7 +37,7 @@ export class ProductReviewsComponent implements OnInit {
   newReview: Review = new Review(this.currentProductName, '', '', 3);
 
   constructor(
-    private readonly http: HttpClient,
+    private readonly reviewService: ReviewService,
     private readonly route: ActivatedRoute,
     private readonly authService: AuthService,
     private readonly router: Router,
@@ -80,24 +79,17 @@ export class ProductReviewsComponent implements OnInit {
     if (!this.currentUserEmail || !this.currentProductName) {
       return;
     }
-
-    this.http
-      .get<any>(`${this.profileUrl}?email=${encodeURIComponent(this.currentUserEmail)}`)
-      .subscribe({
-        next: (profile) => {
-          // Engañamos a Angular con setTimeout para evitar NG0100
-          setTimeout(() => {
-            const purchased: string[] = Array.isArray(profile.purchasedProducts)
-              ? profile.purchasedProducts.map((p: any) => String(p).toLowerCase())
-              : [];
-            this.canWriteReview = purchased.includes(this.currentProductName.toLowerCase());
-            this.cdr.detectChanges();
-          });
-        },
-        error: () => {
-          this.canWriteReview = false;
-        }
-      });
+    this.reviewService.userCanReview(this.currentUserEmail, this.currentProductName).subscribe({
+      next: (allowed) => {
+        setTimeout(() => {
+          this.canWriteReview = !!allowed;
+          this.cdr.detectChanges();
+        });
+      },
+      error: () => {
+        this.canWriteReview = false;
+      }
+    });
   }
 
   private loadReviewsForProduct(productName: string): void {
@@ -105,11 +97,9 @@ export class ProductReviewsComponent implements OnInit {
     this.loading = true;
     this.reviewsLoaded = false;
     this.reviews = [];
-    const url = `${this.apiUrl}/by-product?productName=${encodeURIComponent(productName)}`;
-
-    this.http.get<Review[]>(url).subscribe({
+    this.reviewService.getReviewsByProduct(productName).subscribe({
       next: (data) => {
-        this.reviews = Array.isArray(data) ? data : [];
+        this.reviews = data;
         this.reviewLoadError = null;
         this.loading = false;
         this.reviewsLoaded = true;
@@ -159,7 +149,7 @@ export class ProductReviewsComponent implements OnInit {
     this.newReview.productName = this.currentProductName;
     this.newReview.email = this.currentUserEmail;
 
-    this.http.post<Review>(this.apiUrl, this.newReview).subscribe({
+    this.reviewService.postReview(this.newReview).subscribe({
       next: (createdReview) => {
         this.reviews = [...this.reviews, createdReview];
         this.newReview = new Review(this.currentProductName, this.currentUserEmail!, '', 3);
