@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../../services/profile-api-service';
-import { ReviewService } from '../../../../services/review-api-service';
+import { AuthService } from '../../services/profile-api-service';
+import { ReviewService } from '../../services/review-api-service';
 
 export class Review {
   constructor(

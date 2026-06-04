@@ -2,9 +2,9 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../../services/profile-api-service';
-import { Navbar } from '../../../../shared/components/navbar/navbar';
-import { Product } from '../../../../services/product-api-service';
+import { AuthService } from '../../services/profile-api-service';
+import { Navbar } from '../../shared/components/navbar/navbar';
+import { Product } from '../../services/product-api-service';
 
 interface CartProduct {
   product: Product;
