@@ -22,4 +22,8 @@ export class CartService {
       quantity,
     });
   }
+
+  checkoutCart(email: string): Observable<Cart> {
+    return this.http.post<Cart>(`${this.baseUrl}/cart/checkout`, { email });
+  }
 }

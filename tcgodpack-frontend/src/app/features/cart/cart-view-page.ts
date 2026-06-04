@@ -1,10 +1,11 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+// import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/profile-api-service';
 import { Navbar } from '../../shared/components/navbar/navbar';
 import { Product } from '../../services/product-api-service';
+import { CartService } from '../../services/cart-api-service';
 
 interface CartProduct {
   product: Product;
@@ -42,10 +43,11 @@ export class CartViewPage implements OnInit {
   private toastClearTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
-    private http: HttpClient,
+    // private http: HttpClient,
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private cartService: CartService
   ) {}
 
   ngOnDestroy(): void {
@@ -74,8 +76,7 @@ export class CartViewPage implements OnInit {
 
     this.loading = true;
     this.cdr.detectChanges();
-    this.http
-      .get<Cart>(`http://localhost:3000/cart?email=${encodeURIComponent(user)}`)
+    this.cartService.getCart(user)
       .subscribe({
         next: (c) => {
           this.cart = c;
@@ -190,7 +191,7 @@ export class CartViewPage implements OnInit {
     this.error = null;
     this.cdr.detectChanges();
 
-    this.http.post<Cart>('http://localhost:3000/cart/checkout', { email: user }).subscribe({
+    this.cartService.checkoutCart(user).subscribe({
       next: (updatedCart) => {
         this.cart = updatedCart;
         this.recalculateTotals(updatedCart);
