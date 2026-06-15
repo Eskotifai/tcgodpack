@@ -135,6 +135,96 @@ export class CartService {
     return carritoUsuario;
   }
 
+  async eliminarProducto(email: string, productNumber: number): Promise<Cart> {
+    if (!Number.isFinite(Number(productNumber)) || Number(productNumber) <= 0) {
+      throw new BadRequestException('product.number is required');
+    }
+
+    const numeroProducto = Math.floor(Number(productNumber));
+    const carritos = await this.obtenerTodos();
+    const carritoUsuario = carritos.find((c) => c.email === email);
+
+    if (!carritoUsuario || !(carritoUsuario.products?.length ?? 0)) {
+      throw new BadRequestException('El carrito está vacío');
+    }
+
+    const productsBeforeRemoval = carritoUsuario.products.length;
+    carritoUsuario.products = carritoUsuario.products.filter(
+      (item) => item.product.number !== numeroProducto,
+    );
+
+    if (carritoUsuario.products.length === productsBeforeRemoval) {
+      throw new BadRequestException('El producto no existe en el carrito');
+    }
+
+    try {
+      await this.jsonHandler.writeData('cart', carritos);
+    } catch (err) {
+      throw new InternalServerErrorException('Error al guardar el carrito');
+    }
+
+    return carritoUsuario;
+  }
+
+  async ajustarCantidad(
+    email: string,
+    productNumber: number,
+    delta: number,
+  ): Promise<Cart> {
+    if (!Number.isFinite(Number(productNumber)) || Number(productNumber) <= 0) {
+      throw new BadRequestException('product.number is required');
+    }
+
+    if (!Number.isFinite(Number(delta)) || Number(delta) === 0) {
+      throw new BadRequestException('delta is required');
+    }
+
+    const numeroProducto = Math.floor(Number(productNumber));
+    const ajuste = Math.trunc(Number(delta));
+    const carritos = await this.obtenerTodos();
+    const carritoUsuario = carritos.find((c) => c.email === email);
+
+    if (!carritoUsuario || !(carritoUsuario.products?.length ?? 0)) {
+      throw new BadRequestException('El carrito está vacío');
+    }
+
+    const productoExistente = carritoUsuario.products.find(
+      (item) => item.product.number === numeroProducto,
+    );
+
+    if (!productoExistente) {
+      throw new BadRequestException('El producto no existe en el carrito');
+    }
+
+    const currentQuantity = Math.max(0, Math.floor(Number(productoExistente.quantity ?? 0)));
+    const newQuantity = currentQuantity + ajuste;
+
+    if (ajuste > 0) {
+      const currentTotalUnits = this.getTotalUnits(carritoUsuario);
+      const remainingUnits = CartService.maxUnitsInCart - currentTotalUnits;
+
+      if (remainingUnits <= 0 || ajuste > remainingUnits) {
+        throw new BadRequestException('la cantidad de unidades seleccionadas supera el espacio actual del carrito');
+      }
+    }
+
+    if (newQuantity <= 0) {
+      carritoUsuario.products = carritoUsuario.products.filter(
+        (item) => item.product.number !== numeroProducto,
+      );
+    } else {
+      productoExistente.quantity = newQuantity;
+    }
+
+    try {
+      await this.jsonHandler.writeData('cart', carritos);
+    } catch (err) {
+      throw new InternalServerErrorException('Error al guardar el carrito');
+    }
+
+    return carritoUsuario;
+  }
+
   async procesarCompra(email: string): Promise<Cart> {
     const carritos = await this.obtenerTodos();
     const carritoUsuario = carritos.find((c) => c.email === email);

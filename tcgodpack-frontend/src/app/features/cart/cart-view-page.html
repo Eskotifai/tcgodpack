@@ -58,6 +58,23 @@
 									<p>{{ item.quantity }}</p>
 								</div>
 							</div>
+
+							<div class="item-actions">
+								<div class="quantity-controls">
+									<button type="button" class="quantity-btn" (click)="changeProductQuantity(item, -1)" [disabled]="loading" aria-label="Disminuir cantidad">-</button>
+									<span class="quantity-value">{{ item.quantity }}</span>
+									<button type="button" class="quantity-btn" (click)="changeProductQuantity(item, 1)" [disabled]="loading || getTotalUnits(c) >= maxUnitsInCart" aria-label="Aumentar cantidad">+</button>
+								</div>
+
+								<button
+									type="button"
+									class="remove-btn"
+									(click)="removeProductFromCart(item)"
+									[disabled]="loading"
+								>
+									Eliminar producto
+								</button>
+							</div>
 						</div>
 					</article>
 				</div>

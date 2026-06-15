@@ -23,6 +23,21 @@ export class CartService {
     });
   }
 
+  removeFromCart(email: string, productNumber: number): Observable<Cart> {
+    return this.http.post<Cart>(`${this.baseUrl}/cart/remove`, {
+      email,
+      productNumber,
+    });
+  }
+
+  adjustCartItemQuantity(email: string, productNumber: number, delta: number): Observable<Cart> {
+    return this.http.post<Cart>(`${this.baseUrl}/cart/adjust`, {
+      email,
+      productNumber,
+      delta,
+    });
+  }
+
   checkoutCart(email: string): Observable<Cart> {
     return this.http.post<Cart>(`${this.baseUrl}/cart/checkout`, { email });
   }

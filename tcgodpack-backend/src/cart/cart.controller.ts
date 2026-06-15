@@ -29,6 +29,29 @@ export class CartController {
     return await this.cartService.obtenerPorEmail(email);
   }
 
+  @Post('remove')
+  async eliminarDelCarrito(
+    @Body()
+    body: {
+      email: string;
+      productNumber: number;
+    },
+  ): Promise<Cart> {
+    return await this.cartService.eliminarProducto(body.email, body.productNumber);
+  }
+
+  @Post('adjust')
+  async ajustarCantidadProducto(
+    @Body()
+    body: {
+      email: string;
+      productNumber: number;
+      delta: number;
+    },
+  ): Promise<Cart> {
+    return await this.cartService.ajustarCantidad(body.email, body.productNumber, body.delta);
+  }
+
   // POST http://localhost:3000/cart/checkout
   @Post('checkout')
   async procederAlPago(

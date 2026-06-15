@@ -168,6 +168,78 @@
   margin: 0.1rem 0 0 0;
 }
 
+.item-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.quantity-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid #cbd5e1;
+  padding: 0.25rem;
+}
+
+.quantity-btn {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #0b132b;
+  background: #0b132b;
+  color: #ffffff;
+  border-radius: 0px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background: transparent;
+  color: #0b132b;
+}
+
+.quantity-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quantity-value {
+  min-width: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+  color: #1c2541;
+}
+
+.remove-btn {
+  border: 1px solid #b42318;
+  background: transparent;
+  color: #b42318;
+  border-radius: 0px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.remove-btn:hover:not(:disabled) {
+  background-color: #b42318;
+  color: #ffffff;
+}
+
+.remove-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* ====== BARRA LATERAL DE PAGOS======= */
 .cart-sidebar {
   position: sticky;

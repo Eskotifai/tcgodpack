@@ -25,6 +25,7 @@ interface Cart {
   styleUrl: './cart-view-page.css',
 })
 export class CartViewPage implements OnInit {
+  readonly maxUnitsInCart = 10;
   cart: Cart | null = null;
   total = 0;
   subtotal = 0;
@@ -113,6 +114,87 @@ export class CartViewPage implements OnInit {
 
   trackByProductNumber(index: number, item: CartProduct): number {
     return item.product.number;
+  }
+
+  getTotalUnits(cart: Cart | null = this.cart): number {
+    return Array.isArray(cart?.products)
+      ? (cart?.products ?? []).reduce((sum, item) => sum + Math.max(0, Math.floor(Number(item.quantity ?? 0))), 0)
+      : 0;
+  }
+
+  private confirmRemoval(productName: string, willRemoveItem: boolean): boolean {
+    const message = willRemoveItem
+      ? `La cantidad de ${productName} llegará a 0 y se eliminará del carrito. ¿Quieres continuar?`
+      : `¿Quieres eliminar ${productName} del carrito?`;
+
+    return window.confirm(message);
+  }
+
+  removeProductFromCart(item: CartProduct): void {
+    const user = this.authService.getCurrentUser();
+    if (!user || this.loading) {
+      return;
+    }
+
+    if (!this.confirmRemoval(item.product.name, false)) {
+      return;
+    }
+
+    this.loading = true;
+    this.error = null;
+    this.cdr.detectChanges();
+
+    this.cartService.removeFromCart(user, item.product.number).subscribe({
+      next: (updatedCart) => {
+        this.cart = updatedCart;
+        this.recalculateTotals(updatedCart);
+        this.loading = false;
+        this.showToast(`Se eliminó ${item.product.name} del carrito.`, 'success');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = this.getErrorMessage(err, 'No se pudo eliminar el producto del carrito.');
+        this.showToast(this.error, 'error');
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  changeProductQuantity(item: CartProduct, delta: number): void {
+    const user = this.authService.getCurrentUser();
+    if (!user || this.loading || delta === 0) {
+      return;
+    }
+
+    const currentQuantity = Math.max(0, Math.floor(Number(item.quantity ?? 0)));
+    const newQuantity = currentQuantity + Math.trunc(delta);
+
+    if (newQuantity <= 0 && !this.confirmRemoval(item.product.name, true)) {
+      return;
+    }
+
+    this.loading = true;
+    this.error = null;
+    this.cdr.detectChanges();
+
+    this.cartService.adjustCartItemQuantity(user, item.product.number, delta).subscribe({
+      next: (updatedCart) => {
+        this.cart = updatedCart;
+        this.recalculateTotals(updatedCart);
+        this.loading = false;
+
+        const actionText = delta > 0 ? 'aumentó' : 'disminuyó';
+        this.showToast(`Se ${actionText} la cantidad de ${item.product.name}.`, 'success');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = this.getErrorMessage(err, 'No se pudo actualizar la cantidad del producto.');
+        this.showToast(this.error, 'error');
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   private recalculateTotals(cart: Cart | null): void {
